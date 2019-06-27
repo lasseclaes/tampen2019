@@ -2,7 +2,7 @@ $("document").ready(function (){
    //http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color-for-default-dot-marker
     $("#play-btn").on("click", startItAll);
     $("#udviklerhejs-btn").on("click", function(){
-    $("#infodiv").toggle();
+      $("#infodiv").toggle();
     });
     $('#infodiv, #user-info').hide();
     $('#cheat-btn').on("click", snyd);
@@ -11,6 +11,14 @@ $("document").ready(function (){
     $("#startTampen").on("click", startItAll);
     $(".ui-footer").hide();
 
+    //"soundhack" - for playing sound on mobile devices - see the soundsInit function
+    var startSound = new Audio('sounds/start.mp3');
+    var succesSound = new Audio('sounds/succes.mp3');
+    var koldSound = new Audio('sounds/kold.mp3');
+    var varmSound = new Audio('sounds/varm.mp3');
+    var flyttadigSound = new Audio('sounds/flyttadig.mp3');
+
+    //console.log (startSound);
 /*TESTS
     alert ("The page just loaded!");
     $("#hererjeg").on("click", scriptTest);
@@ -294,27 +302,31 @@ function getDirections(position){
 
 function comparePos(currentDistanceToTamp){
     if (oldDistance == undefined){
-	$("#always-on").html("<p>Tampen gemmer sig.</p>");
-	playSound("start");
+	//$("#always-on").html("<p>Tampen gemmer sig.</p>");
+	   //playSound("start");
     }
     //Math.abs(x) - få absolut tal, men vist ikke nødvendigt
     else if(currentDistanceToTamp <= 20){
 	$("#always-on").prepend("<h1 class='succes'>Tillykke manner! Du fandt tampen!</h1>");
-	playSound("succes");
+	//playSound("succes");
+  succesSound.play();
     }
     else if(currentDistanceToTamp > oldDistance){
 	$("#always-on").prepend("<p class='kold'>Det bliver koldere!</p>");
-	playSound("kold");
+	//playSound("kold");
+  koldSound.play();
 	drawMarker("kold");
     }
     else if(currentDistanceToTamp < oldDistance){
 	$("#always-on").prepend("<p class='varm'>Det bliver varmere!</p>");
-	playSound("varm");
+	//playSound("varm");
+  varmSound.play();
 	drawMarker("varm");
     }
     else{
 	$("#always-on").prepend("<p class='samesame'>Flytter du dig overhovedet? Du måsta flytta på dig!</p>");
-	playSound("flyttadig");
+	//playSound("flyttadig");
+  flyttadigSound.play();
     }
     oldDistance = currentDistanceToTamp;
 }
@@ -335,6 +347,7 @@ function drawMarker(iconPath){
 		});
 }
 
+//SLET - not used?
 function playSound(delAfFilnavn){
 	/*var audioSrc = new Array();
 	    audioSrc[0] = "sounds/kold.mp3";
@@ -430,9 +443,35 @@ window.onbeforeunload = function(){
 }
 */
 
+function soundsInit(){
+  startSound.play();
+  //console.log (startSound);
+
+  //sound hack for playing on mobile devices - https://stackoverflow.com/questions/41221581/play-multiple-audio-sounds-in-mobile-devices-with-javascript
+
+  /*succesSound.volume = 0;
+  koldSound.volume = 0;
+  varmSound.volume = 0;
+  flyttadigSound.volume = 0; */
+
+  succesSound.play();
+  succesSound.pause();
+  koldSound.play();
+  koldSound.pause();
+  varmSound.play();
+  varmSound.pause();
+  flyttadigSound.play();
+  flyttadigSound.pause();
+
+  /*succesSound.volume = 1;
+  koldSound.volume = 1;
+  varmSound.volume = 1;
+  flyttadigSound.volume = 1; */
+}
+
 function startItAll(){
     //alert("argh!");
-    alert ("v2");
+    //alert ("v6");
     $(".ui-loader").css("display", "block");
     $("#map-canvas").css("display", "block");
     $("#intro").remove();
@@ -441,6 +480,7 @@ function startItAll(){
     $(".ui-footer").show();
     $("#play-btn").hide();
     getPos();
+    soundsInit();
     startUpdate(10000);
 }
 //SLUT på $("document").ready(function (){
